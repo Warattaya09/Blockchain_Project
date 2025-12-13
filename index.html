@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>Deepfake Blockchain Verifier</title>
+    <style>
+        body { font-family: 'Sarabun', sans-serif; background: #f0f2f5; text-align: center; padding: 50px; }
+        .container { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 600px; margin: auto; }
+        h1 { color: #333; }
+        .btn { background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .btn:hover { background: #45a049; }
+        .result-box { margin-top: 20px; padding: 20px; border-radius: 5px; display: none; }
+        .fake { background-color: #ffebee; color: #c62828; border: 1px solid #c62828; }
+        .real { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🛡️ Deepfake Detector</h1>
+    <p>อัปโหลดวิดีโอเพื่อตรวจสอบด้วย AI และ Blockchain</p>
+    
+    <input type="file" id="videoInput" accept="video/*" style="margin: 20px 0;">
+    <br>
+    <button class="btn" onclick="startDetection()">🚀 ตรวจสอบวิดีโอ</button>
+    
+    <div id="loading" style="display:none; margin-top:20px;">
+        ⏳ กำลังให้ AI วิเคราะห์ และบันทึกลง Blockchain...
+    </div>
+
+    <div id="resultArea" class="result-box">
+        <h2 id="resTitle"></h2>
+        <p>ความมั่นใจ: <span id="resConf"></span>%</p>
+        <p>📝 Blockchain Hash: <br><code id="txHash" style="background:#eee; padding:5px;"></code></p>
+    </div>
+</div>
+
+<script>
+    async function startDetection() {
+        const fileInput = document.getElementById('videoInput');
+        const file = fileInput.files[0];
+
+        if (!file) { alert("กรุณาเลือกไฟล์ก่อน!"); return; }
+
+        // 1. แสดง Loading
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('resultArea').style.display = 'none';
+
+        // 2. ส่งไฟล์ไปให้ Python (Backend)
+        const formData = new FormData();
+        formData.append('video', file);
+
+        try {
+            const response = await fetch('http://localhost:5000/predict', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+
+            // 3. แสดงผลลัพธ์
+            document.getElementById('loading').style.display = 'none';
+            const resArea = document.getElementById('resultArea');
+            resArea.style.display = 'block';
+            
+            document.getElementById('resTitle').innerText = "ผลลัพธ์: " + data.result;
+            document.getElementById('resConf').innerText = data.confidence;
+            
+            // เปลี่ยนสีตามผลลัพธ์
+            resArea.className = 'result-box ' + (data.result === 'FAKE' ? 'fake' : 'real');
+
+            // จำลอง Blockchain Hash (ในอนาคตใช้ ethers.js เชื่อม MetaMask ตรงนี้ได้)
+            document.getElementById('txHash').innerText = "0x" + Math.random().toString(16).substr(2, 40);
+
+        } catch (error) {
+            console.error(error);
+            alert("เกิดข้อผิดพลาดในการเชื่อมต่อกับ AI Server");
+        }
+    }
+</script>
+
+</body>
+</html>
