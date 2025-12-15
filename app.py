@@ -3,6 +3,8 @@ import time
 import hashlib
 import random
 import json
+import streamlit as st
+import requests
 
 # ==========================================
 # 1. ส่วนจำลองระบบ AI (AI Simulation)
@@ -128,6 +130,16 @@ def main():
 
             with st.expander("🔍 ดูข้อมูลภายใน Block (Block Data)"):
                 st.json(block_data)
+
+st.title("AI Video Verification")
+
+video = st.file_uploader("Upload video", type=["mp4"])
+
+if video:
+    files = {"video": video}
+    res = requests.post("http://127.0.0.1:5000/upload_video", files=files)
+
+    st.json(res.json())
 
 if __name__ == "__main__":
     main()
