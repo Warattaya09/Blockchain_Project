@@ -1,0 +1,32 @@
+{
+  "nodeA:10.0.94.251": {
+    "reputation": 0,
+    "reward": 0,
+    "balance": 80,
+    "last_win": 0
+  },
+  "nodeC:10.0.94.251": {
+    "reputation": 0,
+    "reward": 0,
+    "balance": 80,
+    "last_win": 0
+  },
+  "nodeA:10.167.165.69": {
+    "reputation": 0,
+    "reward": 0,
+    "balance": 100,
+    "last_win": 0
+  },
+  "nodeC:10.0.116.174": {
+    "reputation": 0,
+    "reward": 0,
+    "balance": 100,
+    "last_win": 0
+  },
+  "nodeB:10.0.200.86": {
+    "reputation": 3,
+    "reward": 20,
+    "balance": 100,
+    "last_win": 1766055342.130927
+  }
+}
