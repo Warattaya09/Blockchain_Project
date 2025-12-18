@@ -328,7 +328,7 @@ def vote():
         #กูเพิ่มโค้ดตรงนี้มาเอง
         pool = pending_block.get("uploader_pool", 0)
         if winner and pool > 0:
-            user[winner]["Balance"] += pool
+            users[winner]["balance"] += pool
 
         for n in correct_voters:
             get_user(users, n)
