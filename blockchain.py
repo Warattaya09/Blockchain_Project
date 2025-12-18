@@ -27,22 +27,33 @@ class Blockchain:
         self.chain.append(block)
 
     def calculate_hash(self, block):
+        # block_copy = block.copy()
+        # block_copy.pop("hash", None)
+        # block_string = json.dumps(block_copy, sort_keys=True).encode()
+        # return hashlib.sha256(block_string).hexdigest()
         block_copy = block.copy()
-        block_copy.pop("hash", None)
-        block_string = json.dumps(block_copy, sort_keys=True).encode()
-        return hashlib.sha256(block_string).hexdigest()
+        block_copy.pop("hash", None)  # ห้ามเอา hash ตัวเองมาคิด
+        encoded = json.dumps(block_copy, sort_keys=True).encode()
+        return hashlib.sha256(encoded).hexdigest()
+
 
     def get_last_block(self):
         return self.chain[-1]
 
     def create_block(self, data):
-        last_block = self.get_last_block()
+        prev_block = self.chain[-1]
 
+        # block = {
+        #     "index": last_block["index"] + 1,
+        #     "timestamp": time.time(),
+        #     "data": data,
+        #     "previous_hash": last_block["hash"],
+        # }
         block = {
-            "index": last_block["index"] + 1,
-            "timestamp": time.time(),
-            "data": data,
-            "previous_hash": last_block["hash"],
+        "index": len(self.chain),
+        "timestamp": time.time(),
+        "data": data,
+        "previous_hash": self.calculate_hash(prev_block)
         }
 
         block["hash"] = self.calculate_hash(block)
@@ -53,3 +64,22 @@ class Blockchain:
     def save_chain(self):
         with open(self.filename, "w") as f:
             json.dump(self.chain, f, indent=2)
+
+    def is_chain_valid(self):
+        for i in range(1, len(self.chain)):
+            curr = self.chain[i]
+            prev = self.chain[i - 1]
+
+            if curr["previous_hash"] != self.calculate_hash(prev):
+                return False
+
+            if curr["hash"] != self.calculate_hash(curr):
+                return False
+
+        return True
+
+
+
+
+
+
